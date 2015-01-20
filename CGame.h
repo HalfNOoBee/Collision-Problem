@@ -13,6 +13,7 @@
 #include "CMap.h"
 #include "CBackground.h"
 
+
 #include <iostream>
 
 
@@ -36,7 +37,6 @@ class CGame
 
         bool bRunning;
 
-        const float GRAVITY = 9.81;
 
     private:
         int SCREEN_WIDTH;

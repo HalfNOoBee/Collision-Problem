@@ -53,6 +53,9 @@
 		</Linker>
 		<Unit filename="CBackground.cpp" />
 		<Unit filename="CBackground.h" />
+		<Unit filename="CCamera.cpp" />
+		<Unit filename="CCamera.h" />
+		<Unit filename="CEnemies.h" />
 		<Unit filename="CGame.cpp" />
 		<Unit filename="CGame.h" />
 		<Unit filename="CMain.cpp" />
@@ -62,6 +65,8 @@
 		<Unit filename="CPlayer.h" />
 		<Unit filename="CSprite.cpp" />
 		<Unit filename="CSprite.h" />
+		<Unit filename="CTTF.cpp" />
+		<Unit filename="CTTF.h" />
 		<Unit filename="CTile.cpp" />
 		<Unit filename="CTile.h" />
 		<Extensions>

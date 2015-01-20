@@ -1,17 +1,22 @@
 #include "CPlayer.h"
 #include "CGame.h"
+#include "CCamera.h"
 
 
 
 CPlayer::CPlayer()
 {
     m_tPlayer = NULL;
+    m_tFireball = NULL;
 
     PosX = 100.0f;
     PosY = 150.0f;
 
-    VELOCITY_X = 5.0f;
-    VELOCITY_Y = 15.0f;
+    MOVING_SPEED = 5.0f;
+    JUMPING_HEIGHT = 50.0f;
+
+    MaxSpeedX = 5.0f;
+    MaxSpeedY = 5.0f;
 
     CurrentFrame = 0;
     CurrentColumn = 0;
@@ -25,73 +30,66 @@ CPlayer::CPlayer()
     m_bisDead = false;
 
 
+    Jump = NULL;
+    Blockhit = NULL;
+
+    m_Score = 1;
+
 }
 
 
 void CPlayer::Init(SDL_Renderer* pRenderer)
 {
     m_tPlayer = SpritePlayer.Load(pRenderer,"data/imgs/player/Mario.png", 255, 0, 255);
+
+    Jump = Mix_LoadWAV("data/sounds/jump.wav");
+    if (Jump == NULL)
+    {
+        std::cout << "Failed to load the jump.wav for the Player! Mix_Error: " << Mix_GetError() << "\n";
+    }
+
+    Blockhit = Mix_LoadWAV ("data/sounds/blockhit.wav");
+    if (Blockhit == NULL)
+    {
+        std::cout << "Failed to load the blockhit.wav for the Player! Mix_Error: " << Mix_GetError() << "\n";
+    }
+
+    ScoreField = new CTTF(20,20);
+    ScoreField->Load(pRenderer,"data/fonts/SuperMario256.ttf",16);
+
+    CurrentScoreField = new CTTF(20,40);
+    CurrentScoreField->Load(pRenderer,"data/fonts/Super Mario Bros.ttf",16);
 }
 
 void CPlayer::HandleInput(SDL_Event* Event)
 {
-
-    /*switch (Event->type)
+    while (SDL_PollEvent(Event))
     {
-        case SDL_KEYDOWN:
-            switch (Event->key.keysym.sym)
-            {
-                case SDLK_a:
-                    m_bMovingLeft = true;
-                    VelX = -VELOCITY_X;
-                    CurrentFrame++;
-                    std::cout << "MovingLeft: " << m_bMovingLeft << "\n";
-                    break;
-
-                case SDLK_d:
-                    m_bMovingRight = true;
-                    VelX = VELOCITY_X;
-                    CurrentFrame++;
-                    break;
-
-                case SDLK_SPACE:
-                    m_bisJumping = true;
-                    m_bLockJump = true;
-                    VelY = -VELOCITY_Y;
-                    CurrentFrame = 1;
-                    break;
-            }
-
-        case SDL_KEYUP:
-            switch (Event->key.keysym.sym)
-            {
-                case SDLK_a:
-                    m_bMovingLeft = false;
-                    //VelX = 0;
-                    //CurrentFrame = 0;
-                    break;
-
-                case SDLK_d:
-                    m_bMovingRight = false;
-                    //VelX = 0;
-                    //CurrentFrame = 0;
-                    break;
-
-            }
-
+        switch (Event->type)
+        {
+            case SDL_KEYDOWN:
+                switch (Event->key.keysym.sym)
+                {
+                    case SDLK_f:
+                        std::cout << "f pressed...\n";
+                        break;
+                }
+        }
     }
-    //std::cout << m_bMovingRight;
-    std::cout << "MovingLeft in HandleInput(): " << m_bMovingLeft << "\n";*/
+
 }
 
 bool CPlayer::Collision_Hor(int x, int y, int &TileCoordY, CMap* Map)
 {
-	int TileXInPixels = x - (x % Tile.GetSize());	//calculate the x position (pixels!) of the tiles we check against
+	int TileXInPixels = x - (x % Tile.GetSize()) ; //calculate the x position (pixels!) of the tiles we check against
+	std::cout << "From " << TileXInPixels << " to ";
 	int CheckEnd = x + PLAYER_WIDTH;		//calculate the end of testing (just to save the x+w calculation each for loop)
+    std::cout << CheckEnd << "\n";
 
 	TileCoordY = y / Tile.GetSize();			//calculate the y position (map coordinates!) of the tiles we want to test
 
-	int TileCoordX = TileXInPixels / Tile.GetSize();	//calculate map x coordinate for first tile
+	int TileCoordX = TileXInPixels / Tile.GetSize(); //calculate map x coordinate for first tile
+	std::cout << "TileCoordX: " << TileCoordX << "\n";
 
 	while(TileXInPixels <= CheckEnd)
     {
@@ -109,7 +107,7 @@ bool CPlayer::Collision_Hor(int x, int y, int &TileCoordY, CMap* Map)
 
 bool CPlayer::Collision_Ver(int x, int y, int &TileCoordX, CMap* Map)
 {
-	int TileYInPixels = y - (y % Tile.GetSize());
+	int TileYInPixels = y - (y % Tile.GetSize()) - 1;
 	int CheckEnd = y + PLAYER_HEIGHT;
 
 	TileCoordX = x / Tile.GetSize();
@@ -136,19 +134,19 @@ void CPlayer::Animate(int MaxFrames)
     {
         CurrentFrame = 0;
     }
-    SpritePlayer.SetSourceRect(0/*PLAYER_WIDTH*/,PLAYER_HEIGHT*CurrentFrame,PLAYER_WIDTH,PLAYER_HEIGHT);
-
-    //std::cout << m_bMovingRight;
+    SpritePlayer.SetSourceRect(PLAYER_WIDTH*CurrentColumn,PLAYER_HEIGHT*CurrentFrame,PLAYER_WIDTH,PLAYER_HEIGHT);
 
 }
 
 
 void CPlayer::Update(CMap* Map)
 {
+    OldTime = CurrentTime;
+    CurrentTime = SDL_GetTicks();
+    dtTime = (CurrentTime - OldTime)/ 1000.0f;
+    //std::cout << dtTime;
 
-    VelX = 0;
-    VelY = 0;
-    PosY += 1.0f; //Gravity
+    VelY = 1;
 
     SDL_PumpEvents();
 
@@ -158,56 +156,74 @@ void CPlayer::Update(CMap* Map)
     {
         m_bMovingLeft = true;
         VelX = -4;
+        CurrentColumn = 1;
         CurrentFrame++;
     }
     else if (Keystates[SDL_SCANCODE_D])
     {
         m_bMovingRight = true;
         VelX = 4;
+        CurrentColumn = 0;
         CurrentFrame++;
+
+        if (VelX == 0)
+        {
+            CurrentFrame = 0;
+        }
     }
     else if (Keystates[SDL_SCANCODE_SPACE])
     {
-        if (m_bLockJump == true)
+        if (m_bLockJump == false)
         {
             m_bisJumping = true;
-            VelY = -VELOCITY_Y;
+            VelY = -30;
             CurrentFrame = 1;
+            m_bLockJump = true;
+            Mix_PlayChannel(-1,Jump,0);
+
+        }
+        else
+        {
+            m_bLockJump = false;
         }
 
     }
-
+    else if (!Keystates[SDL_SCANCODE_D] || (!Keystates[SDL_SCANCODE_A] && m_bisJumping == false))
+    {
+        VelX = 0;
+        CurrentFrame = 4;
+    }
 
     int TilePos = 0;
-
-    std::cout << "MovingLeft in Update(): " << m_bMovingLeft << "\n";
-    std::cout << "MovingRight in Update(): " << m_bMovingRight << "\n";
 
 	//x axis first (--)
 	if(VelX > 0) //right
     {
-		if(Collision_Ver(PosX + VelX + PLAYER_WIDTH, PosY, TilePos, Map) == 1)
+		if(Collision_Ver(PosX + VelX + PLAYER_WIDTH + CCamera::Camera.GetPosX(), PosY, TilePos, Map) == true)
         {
-			PosX = (TilePos * Tile.GetSize()) - PLAYER_WIDTH;
-			std::cout << "collision: Setting player to " << PosX << " ///// " << "TilePos: " << TilePos <<"\n";
+			PosX = (TilePos * Tile.GetSize()) - PLAYER_WIDTH - 1;
+			Mix_PlayChannel(-1,Blockhit,0);
+
         }
 		else
         {
             PosX += VelX;
-            std::cout << "no collision: moving right...\n";
+            CCamera::Camera.SetPosX(4);
         }
 
 	}
 	else if(VelX < 0) //left
 	{
-		if(Collision_Ver((PosX + VelX), PosY, TilePos, Map) == 1)
+		if(Collision_Ver((PosX + VelX + CCamera::Camera.GetPosX()), PosY, TilePos, Map) == true)
         {
             PosX = (TilePos + 1)* Tile.GetSize();
-            std::cout << "collision: Setting player to " << PosX << " ///// " << "TilePos: " << TilePos <<"\n";
+            Mix_PlayChannel(-1,Blockhit,0);
+
         }
 		else
         {
             PosX += VelX;
+            CCamera::Camera.SetPosX(-4);
         }
 
 	}
@@ -219,7 +235,7 @@ void CPlayer::Update(CMap* Map)
         {
 			PosY = (TilePos + 1)* Tile.GetSize();
 			VelY = 0;
-			std::cout << "collision: Setting player to " << PosY << " ///// " << "TilePos: " << TilePos <<"\n";
+			Mix_PlayChannel(-1,Blockhit,0);
 		}
 		else
         {
@@ -228,15 +244,12 @@ void CPlayer::Update(CMap* Map)
 		}
 	}
 	else
-    {		//moving down / on ground
-		//printf("test: down, vely:%d\n", vely);
+    {
 		if(Collision_Hor(PosX, (PosY + VelY + PLAYER_HEIGHT), TilePos, Map))
 		{
+		    VelY = 0;
 			PosY = (TilePos * Tile.GetSize()) - PLAYER_HEIGHT;
-			VelY = 1;
 
-			/*if(!keystates[SDLK_RSHIFT])	//player only may jump again if the jump key is released while on ground
-				lockjump = false;*/
 		}
 		else
         {
@@ -248,35 +261,35 @@ void CPlayer::Update(CMap* Map)
 				VelY = Tile.GetSize();
             }
 
-			m_bLockJump = true;			//don't allow jumping after falling of an edge
+			m_bLockJump = true;
 		}
+
+        PosY += VelY;
 	}
+
+    m_Score++;
+	std::stringstream ss;
+	ss << std::setw(6) << std::setfill('0') << m_Score;
+	sScore = ss.str().c_str();
 }
+
 
 
 
 void CPlayer::Render(SDL_Renderer* pRenderer)
 {
-    std::cout << VelX << "/" << VelY << "\n";
-    std::cout << PosX << "/" << PosY << "\n";
     SpritePlayer.SetDestinationRect(PosX, PosY, PLAYER_WIDTH, PLAYER_HEIGHT);
     SpritePlayer.Render(pRenderer);
+    ScoreField->Render(pRenderer,"SCORE",255,255,255);
+    CurrentScoreField->Render(pRenderer,sScore,255,255,255);
 }
 
-void CPlayer::KeepBounds()
+void CPlayer::CleanUp()
 {
-    if (PosY + PLAYER_HEIGHT >= 480) //bottom
-    {
-        PosY = 480 - PLAYER_HEIGHT;
-    }
-    else if (PosX + PLAYER_WIDTH >= 640) //right
-    {
-        m_bisDead = true;
-    }
-    else if (PosX <= 0) //left
-    {
-        PosX = 0;
-    }
+    //Attack.CleanUp();
+
+    Mix_FreeChunk(Blockhit);
+    Mix_FreeChunk(Jump);
 }
 
 

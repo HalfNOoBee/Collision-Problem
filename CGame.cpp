@@ -85,7 +85,7 @@ bool CGame::OnInit()
 
     Background.Init(MainRenderer);
 
-    Map.Load(MainRenderer, "data/maps/01/1-1 Scroll.txt", 752, 480);
+    Map.Load(MainRenderer, "data/maps/01/1-1.txt", 1600, 480);
 
     Player.Init(MainRenderer);
 
@@ -97,36 +97,12 @@ void CGame::OnEvent(SDL_Event* Event)
 {
     Player.HandleInput(Event);
 
-
     switch (Event->type)
     {
         case SDL_QUIT:
             bRunning = false;
             break;
 
-        /*case SDL_KEYDOWN:
-            switch (Event->key.keysym.sym)
-            {
-                case SDLK_RIGHT:
-                    Player.SetPosX(Player.GetPosX() + Player.GetMovingSpeed());
-                    Player.SetCurrentColumn(0);
-                    Player.SetCurrentFrame(Player.GetCurrentFrame() + 1);
-                    //Map.SetCameraPos(-20,0);
-                    break;
-
-                case SDLK_LEFT:
-                    Player.SetPosX(Player.GetPosX() - Player.GetMovingSpeed());
-                    Player.SetCurrentColumn(1);
-                    Player.SetCurrentFrame(Player.GetCurrentFrame() + 1);
-                    //Map.SetCameraPos(10,0);
-                    break;
-
-                case SDLK_SPACE:
-                    Player.SetPosY(Player.GetPosY() - Player.GetJumpingHeight());
-                    Player.SetCurrentColumn(3);
-                    Player.SetCurrentFrame(Player.GetCurrentFrame());
-                    break;
-            }*/
     }
 }
 
@@ -135,9 +111,7 @@ void CGame::OnUpdate()
 {
     Background.Update(MainRenderer);
     Player.Animate(5);
-    Player.KeepBounds();
     Player.Update(&Map);
-
 }
 
 void CGame::OnRender()

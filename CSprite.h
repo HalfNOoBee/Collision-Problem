@@ -20,8 +20,6 @@ class CSprite
         void SetSourceRect(int x, int y, int width, int height);
         void SetDestinationRect(int x, int y, int width, int height);
 
-        void CheckCollision();
-
     private:
         SDL_Rect rcSrc;
         SDL_Rect rcDst;

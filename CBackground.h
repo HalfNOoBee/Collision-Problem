@@ -12,6 +12,7 @@ class CBackground
     public:
         CBackground();
 
+    public:
         bool Init(SDL_Renderer* pRenderer);
         void Update(SDL_Renderer* pRenderer);
         void Render(SDL_Renderer* pRenderer);

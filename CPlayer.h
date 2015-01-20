@@ -5,6 +5,14 @@
 #include "CSprite.h"
 #include "CTile.h"
 #include "CMap.h"
+#include "CTTF.h"
+
+#include "SDL_mixer.h"
+
+#include <iomanip>
+#include <string>
+#include <sstream>
+
 
 
 
@@ -19,7 +27,7 @@ class CPlayer
         void Animate(int MaxFrames);
         void Update(CMap* Map);
         void Render(SDL_Renderer* pRenderer);
-        void KeepBounds();
+        void CleanUp();
 
         void SetPosX(float PosX);
         void SetPosY(float PosY);
@@ -33,21 +41,34 @@ class CPlayer
 
     private:
         SDL_Texture* m_tPlayer;
+        SDL_Texture* m_tFireball;
 
-        const int PLAYER_WIDTH = 28;
+        const int PLAYER_WIDTH = 26;
         const int PLAYER_HEIGHT = 32;
 
         float VelX;
         float VelY;
 
-        float VELOCITY_X;
-        float VELOCITY_Y;
+        float MOVING_SPEED;
+        float JUMPING_HEIGHT;
 
         float PosX;
         float PosY;
 
+        float MaxSpeedX;
+        float MaxSpeedY;
+
         int CurrentFrame;
         int CurrentColumn;
+
+        Uint32 OldTime;
+        Uint32 CurrentTime;
+        float dtTime;
+
+        std::string sScore;
+        int m_Score;
+        CTTF* ScoreField;
+        CTTF* CurrentScoreField;
 
         bool m_bMovingRight;
         bool m_bMovingLeft;
@@ -61,6 +82,8 @@ class CPlayer
         CSprite SpritePlayer;
         CTile Tile;
 
+        Mix_Chunk* Jump;
+        Mix_Chunk* Blockhit;
 };
 
 

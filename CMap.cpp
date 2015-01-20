@@ -1,15 +1,18 @@
 #include "CMap.h"
+#include "CCamera.h"
 
 CMap::CMap()
 {
     StartX = 0;
     StartY = 0;
 
-    MaxX = 800;
+    MaxX = 1600;
     MaxY = 480;
 
     MAP_WIDTH = 0;
     MAP_HEIGHT = 0;
+
+    m_Completed = false; //Player has reached end of Level
 
 }
 
@@ -35,7 +38,7 @@ bool CMap::Load(SDL_Renderer* pRenderer, char* File, int MapWidth, int MapHeight
         {
             CTile tempTile;
 
-            fscanf(FileHandle, "%d:%d ", &tempTile.TileID, &tempTile.TypeID);
+            fscanf(FileHandle, "%d:%d ", &tempTile.TempTileID, &tempTile.TempTypeID);
 
             TileList.push_back(tempTile);
         }
@@ -44,7 +47,7 @@ bool CMap::Load(SDL_Renderer* pRenderer, char* File, int MapWidth, int MapHeight
 
     fclose(FileHandle);
 
-    TileSheet.Load(pRenderer, "data/imgs/tiles/bigmap/Tileset-Blocks.png", 255, 0, 255);
+    TileSheet.Load(pRenderer, "data/imgs/tiles/Tileset-Blocks2.png", 255, 0, 255);
 
     return true;
 }
@@ -53,185 +56,191 @@ void CMap::Render(SDL_Renderer* pRenderer)
 {
 
     int ID = 0;
+    CCamera Camera;
 
-    for(int Y = 0; Y < MAP_HEIGHT/Tile.GetSize(); Y++)
+    for(int Y = 0; Y < MAP_HEIGHT_IN_TILES; Y++)
     {
-        for(int X = 0; X < MAP_WIDTH/Tile.GetSize(); X++)
+        for(int X = 0; X < MAP_WIDTH_IN_TILES; X++)
         {
-            if(TileList[ID].TileID == 0) //No Tile
+            if (TileList[ID].IsOnScreen(X * Tile.GetSize(),Y * Tile.GetSize()) == false)
             {
                 ID++;
                 continue;
             }
+            else
+            {
+                if(TileList[ID].GetTileID() == 0) //No Tile
+                {
+                    ID++;
+                    continue;
+                }
 
-            else if (TileList[ID].TileID == 1) //
-            {
-                TileSheet.SetSourceRect(0, 0, Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
+                else if (TileList[ID].GetTileID() == 1) //
+                {
+                    TileSheet.SetSourceRect(0, 0, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
 
-            else if (TileList[ID].TileID == 2) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize(), 0, Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
+                else if (TileList[ID].GetTileID() == 2) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize(), 0, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
 
-            else if (TileList[ID].TileID == 3) //
-            {
+                else if (TileList[ID].GetTileID() == 3) //
+                {
 
-                TileSheet.SetSourceRect(Tile.GetSize()*2, 0, Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
+                    TileSheet.SetSourceRect(Tile.GetSize()*2, 0, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 4) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*3, 0, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 5) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*4, 0, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 6) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*5, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 14) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*2, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 20) //
+                {
+                    TileSheet.SetSourceRect(0, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 21) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize(), Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 22) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*2, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 23) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*3, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 24) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*4, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 25) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*5, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 26) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*6, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 27) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*7, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 28) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*8, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 29) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*9, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
+                else if (TileList[ID].GetTileID() == 30) //
+                {
+                    TileSheet.SetSourceRect(Tile.GetSize()*10, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.Render(pRenderer);
+                    ID++;
+                    continue;
+                }
             }
-            else if (TileList[ID].TileID == 4) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*3, 0, Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 5) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*4, 0, Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 6) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*5, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 14) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*2, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 20) //
-            {
-                TileSheet.SetSourceRect(0, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 21) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize(), Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 22) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*2, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 23) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*3, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 24) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*4, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 25) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*5, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 26) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*6, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 27) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*7, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 28) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*8, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 29) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*9, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-            else if (TileList[ID].TileID == 30) //
-            {
-                TileSheet.SetSourceRect(Tile.GetSize()*10, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
-                TileSheet.Render(pRenderer);
-                ID++;
-                continue;
-            }
-
         }
     }
-
-    //std::cout << "Total Tiles detected: " << ID << "\n";
 }
 
 int CMap::GetTypeOfTile(int X, int Y)
 {
-    return TileList[Y * MAP_WIDTH_IN_TILES + X].TypeID;
+    return TileList[Y*MAP_WIDTH_IN_TILES + X].GetTypeID();
 }
 
 void CMap::SetCameraPos (int PosX, int PosY)
 {
     if (PosX > 0)
     {
-        StartX += 5;
+        StartX += PosX;
     }
     else if (PosX < 0)
     {
-        StartX -= 5;
+        StartX += PosX;
     }
 
 }

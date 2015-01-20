@@ -6,8 +6,13 @@
 #include <iostream>
 #include "CSprite.h"
 
-enum {TILE_TYPE_NORMAL = 0,
-      TILE_TYPE_SOLID = 1};
+
+enum {TILE_TYPE_NONE = 0,
+      TILE_TYPE_SOLID = 1,
+      TILE_TYPE_WALKABLE = 2,
+      TILE_TYPE_DMG = 3,
+      TILE_TYPE_CLIMBABLE = 4,
+      TILE_TYPE_UNDERWATER = 5};
 
 
 class CTile
@@ -15,14 +20,20 @@ class CTile
     public:
         CTile();
 
-    public:
+        int TempTileID;
+        int TempTypeID;
+
+        int GetTileID();
+        int GetTypeID();
+        int GetSize();
+
+        bool IsOnScreen(int X, int Y);
+
+    private:
         int TileID;
         int TypeID;
 
-        int GetSize();
-
-    private:
-        static const int TILE_SIZE = 16;
+        static const int TILE_SIZE = 32;
 };
 
 

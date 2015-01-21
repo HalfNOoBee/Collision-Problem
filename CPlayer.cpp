@@ -61,23 +61,43 @@ void CPlayer::Init(SDL_Renderer* pRenderer)
     CurrentScoreField->Load(pRenderer,"data/fonts/Super Mario Bros.ttf",16);
 }
 
-void CPlayer::HandleInput(SDL_Event* Event)
+void CPlayer::HandleInput(SDL_Event Event)
 {
-    while (SDL_PollEvent(Event))
+    switch (Event.type)
     {
-        switch (Event->type)
-        {
-            case SDL_KEYDOWN:
-                switch (Event->key.keysym.sym)
-                {
-                    case SDLK_f:
-                        std::cout << "f pressed...\n";
-                        break;
-                }
-        }
-    }
+        case SDL_KEYDOWN:
+            switch (Event.key.keysym.sym)
+            {
+                case SDLK_a:
+                    m_bMovingLeft = true;
+                    VelX = -4;
+                    break;
 
+                case SDLK_d:
+                    m_bMovingRight = true;
+                    VelX = 4;
+                    break;
+
+                case SDLK_SPACE:
+                    m_bisJumping = true;
+                    m_bLockJump = true;
+                    VelY = - 40;
+            }
+
+        case SDL_KEYUP:
+            switch (Event.key.keysym.sym)
+            {
+                case SDLK_a:
+                    m_bMovingLeft = false;
+                    break;
+
+                case SDLK_w:
+                    m_bMovingRight = false;
+                    break;
+            }
+    }
 }
+
 
 bool CPlayer::Collision_Hor(int x, int y, int &TileCoordY, CMap* Map)
 {
@@ -155,16 +175,17 @@ void CPlayer::Update(CMap* Map)
     if (Keystates[SDL_SCANCODE_A])
     {
         m_bMovingLeft = true;
-        VelX = -4;
         CurrentColumn = 1;
         CurrentFrame++;
+        std::cout << VelX << "\n";
     }
+
     else if (Keystates[SDL_SCANCODE_D])
     {
         m_bMovingRight = true;
-        VelX = 4;
         CurrentColumn = 0;
         CurrentFrame++;
+        std::cout << VelX << "\n";
 
         if (VelX == 0)
         {
@@ -199,7 +220,7 @@ void CPlayer::Update(CMap* Map)
 	//x axis first (--)
 	if(VelX > 0) //right
     {
-		if(Collision_Ver(PosX + VelX + PLAYER_WIDTH + CCamera::Camera.GetPosX(), PosY, TilePos, Map) == true)
+		if(Collision_Ver(PosX + VelX + PLAYER_WIDTH /*+ CCamera::Camera.GetPosX()*/, PosY, TilePos, Map) == true)
         {
 			PosX = (TilePos * Tile.GetSize()) - PLAYER_WIDTH - 1;
 			Mix_PlayChannel(-1,Blockhit,0);
@@ -208,13 +229,13 @@ void CPlayer::Update(CMap* Map)
 		else
         {
             PosX += VelX;
-            CCamera::Camera.SetPosX(4);
+            //CCamera::Camera.SetPosX(4);
         }
 
 	}
 	else if(VelX < 0) //left
 	{
-		if(Collision_Ver((PosX + VelX + CCamera::Camera.GetPosX()), PosY, TilePos, Map) == true)
+		if(Collision_Ver((PosX + VelX/* + CCamera::Camera.GetPosX()*/), PosY, TilePos, Map) == true)
         {
             PosX = (TilePos + 1)* Tile.GetSize();
             Mix_PlayChannel(-1,Blockhit,0);
@@ -223,7 +244,6 @@ void CPlayer::Update(CMap* Map)
 		else
         {
             PosX += VelX;
-            CCamera::Camera.SetPosX(-4);
         }
 
 	}
@@ -278,7 +298,7 @@ void CPlayer::Update(CMap* Map)
 
 void CPlayer::Render(SDL_Renderer* pRenderer)
 {
-    SpritePlayer.SetDestinationRect(PosX, PosY, PLAYER_WIDTH, PLAYER_HEIGHT);
+    SpritePlayer.SetDestinationRect(PosX - CCamera::Camera.GetPosX(), PosY, PLAYER_WIDTH, PLAYER_HEIGHT);
     SpritePlayer.Render(pRenderer);
     ScoreField->Render(pRenderer,"SCORE",255,255,255);
     CurrentScoreField->Render(pRenderer,sScore,255,255,255);
@@ -286,8 +306,6 @@ void CPlayer::Render(SDL_Renderer* pRenderer)
 
 void CPlayer::CleanUp()
 {
-    //Attack.CleanUp();
-
     Mix_FreeChunk(Blockhit);
     Mix_FreeChunk(Jump);
 }
@@ -314,4 +332,14 @@ float CPlayer::GetPosX()
 float CPlayer::GetPosY()
 {
     return PosY;
+}
+
+float CPlayer::GetWidth()
+{
+    return (int)PLAYER_WIDTH;
+}
+
+float CPlayer::GetHeight()
+{
+    return (int)PLAYER_HEIGHT;
 }

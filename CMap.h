@@ -24,14 +24,12 @@ class CMap
         void Render(SDL_Renderer* pRenderer);
 
         int GetTypeOfTile(int X, int Y);
-        void SetCameraPos (int PosX, int PosY);
-
         bool IsCompleted() { return m_Completed; }
 
         std::vector<CTile> TileList;
 
-        int StartX;
-        int StartY;
+        float GetWidth() { return MAP_WIDTH; }
+        float GetHeight() { return MAP_HEIGHT; }
 
     private:
         int MAP_WIDTH;
@@ -44,9 +42,6 @@ class CMap
 
         CSprite TileSheet;
         CTile Tile;
-
-        int MaxX;
-        int MaxY;
 
 
 };

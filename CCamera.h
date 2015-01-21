@@ -3,6 +3,8 @@
 
 #include "SDL.h"
 #include <iostream>
+#include "CPlayer.h"
+#include "CMap.h"
 
 
 class CGame;
@@ -14,7 +16,7 @@ class CCamera
         static CCamera Camera;
         CCamera();
 
-        void SetPosX(float MovementSpeed);
+        void CenterOnPlayer(CPlayer Player, CMap Map);
         float GetPosX();
         float GetPosY();
 

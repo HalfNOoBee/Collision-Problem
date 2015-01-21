@@ -3,12 +3,6 @@
 
 CMap::CMap()
 {
-    StartX = 0;
-    StartY = 0;
-
-    MaxX = 1600;
-    MaxY = 480;
-
     MAP_WIDTH = 0;
     MAP_HEIGHT = 0;
 
@@ -77,7 +71,8 @@ void CMap::Render(SDL_Renderer* pRenderer)
 
                 else if (TileList[ID].GetTileID() == 1) //
                 {
-                    TileSheet.SetSourceRect(0, 0, Tile.GetSize(), Tile.GetSize());
+                    TileList[ID].Animate();
+                    TileSheet.SetSourceRect(Tile.GetSize() * TileList[ID].GetCurrentFrame(), 0, Tile.GetSize(), Tile.GetSize());
                     TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
@@ -97,7 +92,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 {
 
                     TileSheet.SetSourceRect(Tile.GetSize()*2, 0, Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -105,7 +100,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 4) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*3, 0, Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -113,7 +108,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 5) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*4, 0, Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize()  + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -121,7 +116,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 6) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*5, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -129,7 +124,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 14) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*2, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -137,7 +132,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 20) //
                 {
                     TileSheet.SetSourceRect(0, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -145,7 +140,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 21) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize(), Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -153,7 +148,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 22) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*2, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -161,7 +156,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 23) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*3, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -169,7 +164,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 24) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*4, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -177,7 +172,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 25) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*5, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -185,7 +180,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 26) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*6, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -193,7 +188,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 27) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*7, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -201,7 +196,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 28) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*8, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -209,7 +204,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 29) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*9, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -217,7 +212,7 @@ void CMap::Render(SDL_Renderer* pRenderer)
                 else if (TileList[ID].GetTileID() == 30) //
                 {
                     TileSheet.SetSourceRect(Tile.GetSize()*10, Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
-                    TileSheet.SetDestinationRect (X * Tile.GetSize() + StartX, Y * Tile.GetSize() + StartY, Tile.GetSize(), Tile.GetSize());
+                    TileSheet.SetDestinationRect (X * Tile.GetSize() - CCamera::Camera.GetPosX(), Y * Tile.GetSize(), Tile.GetSize(), Tile.GetSize());
                     TileSheet.Render(pRenderer);
                     ID++;
                     continue;
@@ -232,16 +227,4 @@ int CMap::GetTypeOfTile(int X, int Y)
     return TileList[Y*MAP_WIDTH_IN_TILES + X].GetTypeID();
 }
 
-void CMap::SetCameraPos (int PosX, int PosY)
-{
-    if (PosX > 0)
-    {
-        StartX += PosX;
-    }
-    else if (PosX < 0)
-    {
-        StartX += PosX;
-    }
-
-}
 

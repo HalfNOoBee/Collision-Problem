@@ -3,30 +3,34 @@
 
 
 #include "CSprite.h"
-#include <vector>
-
 
 
 class CEnemy
 {
     public:
-        Init(SDL_Renderer* pRenderer, const char* cPath, int X, int Y, int Width, int Height);
-        Update();
-        Render();
-        CleanUp();
+        virtual void Load() = 0;
+        virtual void Update() = 0;
+        virtual void Render() = 0;
 
+        virtual float GetPosX() { return m_PosX; }
+        virtual float GetPosY() { return m_PosY; }
+
+        virtual float GetWidth() { return m_Width; }
+        virtual float GetHeight() { return m_Height; }
+
+        virtual bool CheckToMap();
 
     private:
-        int PosX;
-        int PosY;
-        int Width;
-        int Height;
+        float m_PosX;
+        float m_PosY;
+        float m_Width;
+        float m_Height;
 
-        int Health;
-        int VelX;
-        int VelY;
-        int CurrentFrame;
+        CSprite Sprite;
 };
+
+
+
 
 
 

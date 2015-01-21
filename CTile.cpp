@@ -5,6 +5,7 @@ CTile::CTile()
 {
     TileID = 0;
     TypeID = TILE_TYPE_NONE;
+    CurrentFrame = 0;
 }
 
 int CTile::GetSize()
@@ -38,6 +39,18 @@ bool CTile::IsOnScreen(int X, int Y)
     else
     {
         return false;
+    }
+}
+
+void CTile::Animate()
+{
+    if (CurrentFrame <= 4)
+    {
+        CurrentFrame++;
+    }
+    else
+    {
+        CurrentFrame = 0;
     }
 }
 

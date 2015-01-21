@@ -24,7 +24,7 @@ class CGame
 
     public:
         bool OnInit();
-        void OnEvent(SDL_Event* Event);
+        void OnEvent(SDL_Event Event);
         void OnUpdate();
         void OnRender();
         void OnCleanup();

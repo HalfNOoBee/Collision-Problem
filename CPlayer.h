@@ -23,8 +23,7 @@ class CPlayer
 
     public:
         void Init(SDL_Renderer* pRenderer);
-        void HandleInput(SDL_Event* Event);
-        void Animate(int MaxFrames);
+        void HandleInput(SDL_Event Event);
         void Update(CMap* Map);
         void Render(SDL_Renderer* pRenderer);
         void CleanUp();
@@ -34,9 +33,13 @@ class CPlayer
 
         float GetPosX();
         float GetPosY();
+        float GetWidth();
+        float GetHeight();
 
         bool Collision_Hor(int x, int y, int &TileCoordY, CMap* Map);
         bool Collision_Ver(int x, int y, int &TileCoordX, CMap* Map);
+
+        void Animate(int MaxFrames);
 
 
     private:

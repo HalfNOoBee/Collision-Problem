@@ -1,4 +1,5 @@
 #include "CGame.h"
+#include "CCamera.h"
 
 
 
@@ -93,11 +94,11 @@ bool CGame::OnInit()
 }
 
 
-void CGame::OnEvent(SDL_Event* Event)
+void CGame::OnEvent(SDL_Event Event)
 {
     Player.HandleInput(Event);
 
-    switch (Event->type)
+    switch (Event.type)
     {
         case SDL_QUIT:
             bRunning = false;
@@ -109,6 +110,7 @@ void CGame::OnEvent(SDL_Event* Event)
 
 void CGame::OnUpdate()
 {
+    CCamera::Camera.CenterOnPlayer(Player,Map);
     Background.Update(MainRenderer);
     Player.Animate(5);
     Player.Update(&Map);

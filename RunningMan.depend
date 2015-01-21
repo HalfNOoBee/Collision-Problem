@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1421691373 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cgame.cpp
+1421864196 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cgame.cpp
 	"CGame.h"
+	"CCamera.h"
 
-1421175113 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cgame.h
+1421864119 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cgame.h
 	"SDL.h"
 	"SDL_image.h"
 	"SDL_ttf.h"
@@ -340,16 +341,16 @@
 	"SDL_image.h"
 	<iostream>
 
-1419075240 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cmain.cpp
+1421864128 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cmain.cpp
 	"CGame.h"
 	"CPlayer.h"
 
-1421777201 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cplayer.cpp
+1421865355 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cplayer.cpp
 	"CPlayer.h"
 	"CGame.h"
 	"CCamera.h"
 
-1421359058 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cplayer.h
+1421864185 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cplayer.h
 	"CSprite.h"
 	"CTile.h"
 	"CMap.h"
@@ -386,21 +387,21 @@
 	"begin_code.h"
 	"close_code.h"
 
-1421698996 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ctile.cpp
+1421784148 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ctile.cpp
 	"CTile.h"
 	"CCamera.h"
 
-1421691267 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ctile.h
+1421784148 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ctile.h
 	"SDL.h"
 	"SDL_image.h"
 	<iostream>
 	"CSprite.h"
 
-1421699159 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cmap.cpp
+1421861370 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cmap.cpp
 	"CMap.h"
 	"CCamera.h"
 
-1421686378 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cmap.h
+1421861759 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\cmap.h
 	"SDL.h"
 	"SDL_image.h"
 	"CTile.h"
@@ -461,10 +462,12 @@
 	<iostream>
 	<string>
 
-1421777387 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ccamera.cpp
+1421863369 source:c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ccamera.cpp
 	"CCamera.h"
 
-1421694509 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ccamera.h
+1421861779 c:\users\lino\documents\1 data lino\freizeit\1 programmieren\c++ & sdl2\c++\runningman\ccamera.h
 	"SDL.h"
 	<iostream>
+	"CPlayer.h"
+	"CMap.h"
 

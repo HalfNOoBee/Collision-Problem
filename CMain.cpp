@@ -5,7 +5,7 @@
 CPlayer Player;
 CGame Game;
 
-const int FPS = 30;
+const int FPS = 40;
 const int DELAY_TIME = 1000.0f / FPS;
 
 
@@ -28,7 +28,7 @@ int main (int argc, char* argv [])
 
         while(SDL_PollEvent(&Event))
         {
-            Game.OnEvent(&Event);
+            Game.OnEvent(Event);
         }
 
         Game.OnUpdate();
